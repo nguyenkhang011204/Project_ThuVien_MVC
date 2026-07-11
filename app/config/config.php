@@ -3,7 +3,7 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'project_thuvien_mvc');
-define('DB_CHARSET', 'utf8_unicode_ci');
+define('DB_CHARSET', 'utf8mb4');
 
 
 ?>
