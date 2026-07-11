@@ -28,7 +28,7 @@ class Database
         return $this->conn;
     }
 
-    public function query($sql)
+    public function query($sql): void
     {
         $this->stmt = $this->conn->prepare($sql);
     }
@@ -38,7 +38,7 @@ class Database
         $this->stmt->bindValue($param, $value);
     }
 
-    public function execute()
+    public function execute(): bool
     {
         return $this->stmt->execute();
     }
@@ -59,5 +59,31 @@ class Database
     {
         return $this->stmt->rowCount();
     }
+
+    public function lastInsertId()
+    {
+        return $this->conn->lastInsertId();
+    }
+
+    public function beginTransaction()
+    {
+        return $this->conn->beginTransaction();
+    }
+
+    public function commit()
+    {
+        return $this->conn->commit();
+    }
+
+    public function rollback()
+    {
+        return $this->conn->rollBack();
+    }
+
+    public function getStatement()
+    {
+        return $this->stmt;
+    }
 }
+
 ?>
