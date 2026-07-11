@@ -8,9 +8,6 @@ class BookModel extends Model
         return $this->db->fetchAll();
     }
 
-    public function index()
-    {
-        echo "Đã vào index";
-    }
+
 }
 ?>

@@ -3,9 +3,9 @@ class BookController extends Controller
 {
     public function index()
     {
-        $bookModel = $this->model('BookModel');
+        $books = $this->model('BookModel')->getAllBooks();
 
-        $books = $bookModel->getAllBooks();
-        $this->view('books/index', ['books' => $books]);
+        echo "<pre>";
+        print_r($books);
     }
 }
