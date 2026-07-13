@@ -27,18 +27,8 @@ $content = $content ?? '';
 
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <!-- <?php echo $content; ?> -->
-                        <h1>Xin chào</h1>
+                        <?php echo $content; ?>
 
-                        <div class="alert alert-success">
-                            Bootstrap hoạt động.
-                        </div>
-
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                Đây là giao diện test.
-                            </div>
-                        </div>
                     </div>
                 </div>
             </main>
