@@ -8,9 +8,15 @@ class Controller
         return new $model();
     }
 
-    public function view(string $view, array $data = [])
+    public function view(string $view, array $data = [], string $layout = 'reader_Layout')
     {
-        require_once __DIR__ . "/../views/$view.php";
+        extract($data);
+
+        $content = __DIR__ . "/../views/$view.php";
+
+        require_once __DIR__ . "/../views/Layouts/$layout.php";
+
     }
+
 }
 ?>
