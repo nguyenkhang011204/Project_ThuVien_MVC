@@ -5,7 +5,9 @@ class BookController extends Controller
     {
         $books = $this->model('BookModel')->getAllBooks();
 
-        echo "<pre>";
-        print_r($books);
+        $this->view('Books/index', [
+            'pageTitle' => 'Quản lý sách',
+            'books' => $books
+        ], 'admin_Layout');
     }
 }
