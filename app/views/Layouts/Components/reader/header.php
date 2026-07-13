@@ -10,9 +10,5 @@ $pageTitle = $pageTitle ?? 'Library Reader';
     <meta name="description" content="Cổng độc giả thư viện">
     <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
     <link rel="stylesheet" href="/Project_ThuVien_MVC/public/css/bootstrap.min.css">
-    <style>
-        .reader-hero {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-        }
-    </style>
+    <link rel="stylesheet" href="/Project_ThuVien_MVC/public/css/theme.css">
 </head>
