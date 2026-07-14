@@ -1,12 +1,12 @@
 <?php
 $accounts = $accounts ?? [];
-$accountCount = $accountCount ?? count($accounts);
+$accountCount = $accountCount ?? $this->accountModel->getAccountCount();
 
 $statCards = [
     ['label' => 'Tài khoản', 'value' => $accountCount, 'icon' => '🔐', 'class' => 'library-stat-primary'],
-    ['label' => 'Hoạt động', 'value' => 3, 'icon' => '✅', 'class' => 'library-stat-info'],
-    ['label' => 'Bị khóa', 'value' => 1, 'icon' => '🚫', 'class' => 'library-stat-secondary'],
-    ['label' => 'Quản trị viên', 'value' => 1, 'icon' => '👨‍💼', 'class' => 'library-stat-primary'],
+    ['label' => 'Hoạt động', 'value' => $accountsByRole['status'], 'icon' => '✅', 'class' => 'library-stat-info'],
+    ['label' => 'Bị khóa', 'value' => $accountsByRole['locked'], 'icon' => '🚫', 'class' => 'library-stat-secondary'],
+    ['label' => 'Quản trị viên', 'value' => $accountsByRole['admin'], 'icon' => '👨‍💼', 'class' => 'library-stat-primary'],
 ];
 ?>
 
@@ -14,17 +14,10 @@ $statCards = [
     <div class="library-hero rounded-4 p-4 p-lg-5 shadow-sm">
         <div class="row align-items-center g-4">
             <div class="col-lg-8">
-                <span class="badge rounded-pill text-bg-light text-primary mb-3 px-3 py-2">Quản lý tài khoản</span>
                 <h1 class="display-6 fw-semibold library-page-title mb-2">Quản lý tài khoản</h1>
                 <p class="lead mb-0 text-light">
                     Quản lý tài khoản người dùng, phân quyền và kiểm soát truy cập hệ thống.
                 </p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <div class="d-inline-flex flex-column align-items-lg-end gap-2">
-                    <a href="#" class="btn btn-light fw-semibold shadow-sm px-4">+ Tạo tài khoản</a>
-                    <a href="#" class="btn btn-outline-light fw-semibold px-4">Nhập khẩu</a>
-                </div>
             </div>
         </div>
     </div>
@@ -74,7 +67,7 @@ $statCards = [
             <div class="col-12 col-xl-3 text-xl-end">
                 <label class="form-label fw-semibold mb-2 d-block">Thao tác</label>
                 <div class="d-flex flex-wrap gap-2 justify-content-xl-end">
-                    <a href="#" class="btn btn-primary rounded-pill px-4">+ Tạo tài khoản</a>
+                    <a href="?url=account/create" class="btn btn-primary rounded-pill px-4">+ Tạo tài khoản</a>
                     <a href="#" class="btn btn-outline-secondary rounded-pill px-4">Xuất</a>
                 </div>
             </div>
@@ -97,62 +90,57 @@ $statCards = [
                 <tr>
                     <th style="width: 60px;">ID</th>
                     <th style="width: 200px;">Tên tài khoản</th>
-                    <th style="width: 150px;">Email</th>
+                    <th style="width: 150px;">Mật khẩu</th>
                     <th style="width: 130px;">Vai trò</th>
                     <th style="width: 100px;">Trạng thái</th>
-                    <th style="width: 150px;">Lần đăng nhập</th>
+                    <th style="width: 150px;">Ngày tạo</th>
                     <th style="width: 150px;">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (!empty($accounts)): ?>
                     <?php foreach ($accounts as $account): ?>
-                        <?php
-                        $statusRaw = trim((string) ($account->trang_thai ?? 'Hoạt động'));
-                        $statusClass = 'text-bg-success';
-                        if (stripos($statusRaw, 'khóa') !== false) {
-                            $statusClass = 'text-bg-danger';
-                        } elseif (stripos($statusRaw, 'không') !== false || stripos($statusRaw, 'vô hiệu') !== false) {
-                            $statusClass = 'text-bg-warning';
-                        }
 
-                        $roleClass = 'badge-primary';
-                        if (stripos($account->vai_tro, 'quản trị') !== false) {
-                            $roleClass = 'badge-danger';
-                        } elseif (stripos($account->vai_tro, 'biên tập') !== false) {
-                            $roleClass = 'badge-info';
-                        }
-                        ?>
                         <tr>
                             <td class="fw-semibold text-primary">
-                                <?= (int) ($account->id ?? 0) ?>
+                                <?= htmlspecialchars($account['MaND']) ?>
                             </td>
                             <td class="fw-semibold">
-                                <?= htmlspecialchars($account->ten_tai_khoan ?? '-', ENT_QUOTES, 'UTF-8') ?>
-                            </td>
-                            <td class="text-muted">
-                                <?= htmlspecialchars($account->email ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($account['TenDangNhap'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td>
-                                <span class="badge rounded-pill <?= $roleClass ?> px-3 py-2">
-                                    <?= htmlspecialchars($account->vai_tro ?? '-', ENT_QUOTES, 'UTF-8') ?>
-                                </span>
+                                <?= htmlspecialchars($account['MatKhau'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td>
-                                <span class="badge rounded-pill <?= $statusClass ?> px-3 py-2">
-                                    <?= htmlspecialchars($statusRaw, ENT_QUOTES, 'UTF-8') ?>
+                                <?php if ($account['VaiTro'] === 'ADMIN'): ?>
+                                    <span>Quản trị viên</span>
+                                <?php elseif ($account['VaiTro'] === 'THUTHU'): ?>
+                                    <span>Thủ thư</span>
+                                <?php else: ?>
+                                    <span>Độc giả</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <span
+                                    class="badge rounded-pill <?= $account['TrangThai'] === 1 ? 'bg-success' : 'bg-secondary' ?>">
+                                    <?php if ($account['TrangThai'] == 1): ?>
+                                        Hoạt động
+                                    <?php else: ?>
+                                        Bị khóa
+                                    <?php endif; ?>
                                 </span>
                             </td>
                             <td>
                                 <small class="text-muted">
-                                    <?= htmlspecialchars($account->lan_dang_nhap_cuoi ?? 'Chưa đăng nhập', ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars($account['NgayTao'] ?? 'Chưa có ngày tạo', ENT_QUOTES, 'UTF-8') ?>
                                 </small>
                             </td>
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="#" class="btn btn-outline-primary">Xem</a>
-                                    <a href="#" class="btn btn-outline-secondary">Sửa</a>
-                                    <a href="#" class="btn btn-outline-danger">Xóa</a>
+                                    <a href="?url=account/edit&id=<?= $account['MaND'] ?>"
+                                        class="btn btn-outline-secondary">Sửa</a>
+                                    <a href="?url=account/delete&id=<?= $account['MaND'] ?>" class="btn btn-outline-danger"
+                                        onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">Xóa</a>
                                 </div>
                             </td>
                         </tr>
