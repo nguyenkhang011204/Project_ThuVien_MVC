@@ -14,18 +14,12 @@ $statCards = [
     <div class="library-hero rounded-4 p-4 p-lg-5 shadow-sm">
         <div class="row align-items-center g-4">
             <div class="col-lg-8">
-                <span class="badge rounded-pill text-bg-light text-primary mb-3 px-3 py-2">Quản lý độc giả</span>
                 <h1 class="display-6 fw-semibold library-page-title mb-2">Quản lý độc giả</h1>
                 <p class="lead mb-0 text-light">
                     Quản lý thông tin và hoạt động của các độc giả trong hệ thống.
                 </p>
             </div>
-            <div class="col-lg-4 text-lg-end">
-                <div class="d-inline-flex flex-column align-items-lg-end gap-2">
-                    <a href="#" class="btn btn-light fw-semibold shadow-sm px-4">+ Thêm độc giả</a>
-                    <a href="#" class="btn btn-outline-light fw-semibold px-4">Nhập danh sách</a>
-                </div>
-            </div>
+
         </div>
     </div>
 </section>
@@ -96,50 +90,40 @@ $statCards = [
             <thead class="table-light">
                 <tr class="text-center">
                     <th style="width: 110px;">Mã độc giả</th>
+                    <th style="width: 110px;">Mã người dùng</th>
                     <th style="width: 200px;">Họ và tên</th>
-                    <th style=" width: 160px;">Email</th>
-                    <th style="width: 120px;">Điện thoại</th>
-                    <th style="width: 100px;">Đang mượn</th>
-                    <th style="width: 120px;">Trạng thái</th>
+                    <th style=" width: 160px;">Ngày sinh</th>
+                    <th style="width: 120px;">Giới tính</th>
+                    <th style="width: 100px;">SDT</th>
+                    <th style="width: 120px;">Địa chỉ</th>
+                    <th style="width: 120px">Ngày đăng ký</th>
                     <th style="width: 150px;">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="text-center">
-                <?php if (!empty($readers)): ?>
-                    <?php foreach ($readers as $reader): ?>
-                        <?php
-                        $statusRaw = trim((string) ($reader->trang_thai ?? 'Hoạt động'));
-                        $statusClass = 'text-bg-success';
-                        if (stripos($statusRaw, 'tạm') !== false || stripos($statusRaw, 'dừng') !== false) {
-                            $statusClass = 'text-bg-warning';
-                        } elseif (stripos($statusRaw, 'vi phạm') !== false || stripos($statusRaw, 'khóa') !== false) {
-                            $statusClass = 'text-bg-danger';
-                        }
-                        ?>
+                <?php if (!empty($users)): ?>
+                    <?php foreach ($users as $user): ?>
                         <tr>
                             <td class="fw-semibold text-primary">
-                                <?= htmlspecialchars($reader->ma_doc_gia ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($user['MaDG'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                            </td>
+                            <td class="fw-semibold text-primary">
+                                <?= htmlspecialchars($user['MaND'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td>
                                 <div class="fw-semibold">
-                                    <?= htmlspecialchars($reader->ten_doc_gia ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars($user['HoTen'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                                 </div>
                             </td>
                             <td class="text-muted">
-                                <?= htmlspecialchars($reader->email ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($user['Email'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td>
-                                <?= htmlspecialchars($reader->dien_thoai ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($user['SDT'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
+
                             <td>
-                                <span class="badge rounded-pill library-chip px-3 py-2">
-                                    <?= (int) ($reader->so_luong_dang_muon ?? 0) ?>
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge rounded-pill <?= $statusClass ?> px-3 py-2">
-                                    <?= htmlspecialchars($statusRaw, ENT_QUOTES, 'UTF-8') ?>
-                                </span>
+
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">

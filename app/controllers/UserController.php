@@ -1,14 +1,15 @@
 <?php
 class UserController extends Controller
 {
+    private $userModel;
+    public function __construct()
+    {
+        $this->userModel = $this->model('UsersModel');
+    }
     public function index()
     {
-        $readers = [
-            (object) ['ma_doc_gia' => 'DG001', 'ten_doc_gia' => 'Nguyễn Văn A', 'email' => 'vana@email.com', 'dien_thoai' => '0123456789', 'trang_thai' => 'Hoạt động', 'so_luong_dang_muon' => 3],
-            (object) ['ma_doc_gia' => 'DG002', 'ten_doc_gia' => 'Trần Thị B', 'email' => 'thib@email.com', 'dien_thoai' => '0987654321', 'trang_thai' => 'Hoạt động', 'so_luong_dang_muon' => 1],
-            (object) ['ma_doc_gia' => 'DG003', 'ten_doc_gia' => 'Lê Văn C', 'email' => 'vanc@email.com', 'dien_thoai' => '0912345678', 'trang_thai' => 'Tạm dừng', 'so_luong_dang_muon' => 0],
-            (object) ['ma_doc_gia' => 'DG004', 'ten_doc_gia' => 'Phạm Thị D', 'email' => 'thid@email.com', 'dien_thoai' => '0934567890', 'trang_thai' => 'Hoạt động', 'so_luong_dang_muon' => 2],
-        ];
+
+        $readers = $this->userModel->getAllUsers();
 
         $this->view('Users/index', [
             'pageTitle' => 'Quản lý độc giả',
@@ -16,6 +17,122 @@ class UserController extends Controller
             'readers' => $readers,
             'readerCount' => count($readers),
         ], 'admin_Layout');
+    }
+
+    public function create()
+    {
+        $users = $this->userModel->getAllUsers();
+
+        $this->view(
+            'Users/create',
+            [
+                'pageTitle' => 'Thêm độc giả',
+                'users' => $users
+            ],
+            'admin_Layout'
+        );
+    }
+
+    public function store()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?url=staff');
+            exit;
+        }
+
+        $data = [
+            'MaDG' => $_POST['MaDG'] ?? '',
+            'MaND' => $_POST['MaND'] ?? '',
+            'HoTen' => $_POST['HoTen'] ?? '',
+            'NgaySinh' => $_POST['NgaySinh'] ?? '',
+            'GioiTinh' => $_POST['GioiTinh'] ?? '',
+            'SDT' => $_POST['SDT'] ?? '',
+            'Email' => $_POST['Email'] ?? '',
+            'DiaChi' => $_POST['DiaChi'] ?? '',
+            'ChucVu' => $_POST['ChucVu'] ?? ''
+        ];
+
+        if ($this->userModel->createUser($data)) {
+            $_SESSION['message'] = 'Thêm độc giả thành công!';
+            header('Location: ?url=user');
+            exit;
+        } else {
+            $_SESSION['error'] = 'Lỗi khi thêm độc giả!';
+            header('Location: ?url=user/create');
+            exit;
+        }
+
+    }
+
+    public function edit()
+    {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            header('Location: ?url=staff');
+            exit;
+        }
+
+        $user = $this->userModel->getUserById($id);
+        if (!$user) {
+            header('Location: ?url=user');
+            exit;
+        }
+
+        $this->view(
+            'Users/edit',
+            [
+                'user' => $user,
+                'pageTitle' => 'Sửa độc giả'
+            ],
+            'admin_Layout'
+        );
+    }
+
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?url=staff');
+            exit;
+        }
+
+        $userId = $_GET['id'] ?? null;
+
+        if (!$userId) {
+            header('Location: ?url=user');
+            exit;
+        }
+
+        $data = [
+            'HoTen' => $_POST['HoTen'] ?? '',
+            'NgaySinh' => $_POST['NgaySinh'] ?? '',
+            'GioiTinh' => $_POST['GioiTinh'] ?? '',
+            'SDT' => $_POST['SDT'] ?? '',
+            'Email' => $_POST['Email'] ?? '',
+            'DiaChi' => $_POST['DiaChi'] ?? '',
+            'ChucVu' => $_POST['ChucVu'] ?? ''
+        ];
+
+        if ($this->userModel->updateUser($userId, $data)) {
+            $_SESSION['message'] = 'Cập nhật độc giả thành công!';
+            header('Location: ?url=user');
+            exit;
+        }
+
+        $_SESSION['error'] = 'Lỗi khi cập nhật độc giả!';
+        header('Location: ?url=user/edit&id=' . urlencode($userId));
+        exit;
+    }
+
+    public function delete()
+    {
+        $userId = $_GET['id'] ?? null;
+
+        $this->userModel->deleteUser($userId);
+
+        $_SESSION['success'] = 'Xóa thành công.';
+
+        header('Location: ?url=user');
     }
 }
 ?>

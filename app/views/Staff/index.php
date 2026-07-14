@@ -6,7 +6,6 @@ $statCards = [
     ['label' => 'Nhân viên', 'value' => $staffCount, 'icon' => '👨‍💼', 'class' => 'library-stat-primary'],
     ['label' => 'Đang làm việc', 'value' => 3, 'icon' => '✅', 'class' => 'library-stat-info'],
     ['label' => 'Nghỉ phép', 'value' => 1, 'icon' => '🏖️', 'class' => 'library-stat-secondary'],
-    ['label' => 'Giám đốc', 'value' => 1, 'icon' => '⭐', 'class' => 'library-stat-primary'],
 ];
 ?>
 
@@ -14,17 +13,10 @@ $statCards = [
     <div class="library-hero rounded-4 p-4 p-lg-5 shadow-sm">
         <div class="row align-items-center g-4">
             <div class="col-lg-8">
-                <span class="badge rounded-pill text-bg-light text-primary mb-3 px-3 py-2">Quản lý nhân viên</span>
                 <h1 class="display-6 fw-semibold library-page-title mb-2">Quản lý nhân viên</h1>
                 <p class="lead mb-0 text-light">
-                    Quản lý thông tin nhân viên, chức vụ, phòng ban và phân công công việc.
+                    Quản lý thông tin nhân viên, chức vụ, và phân công công việc.
                 </p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <div class="d-inline-flex flex-column align-items-lg-end gap-2">
-                    <a href="#" class="btn btn-light fw-semibold shadow-sm px-4">+ Thêm nhân viên</a>
-                    <a href="#" class="btn btn-outline-light fw-semibold px-4">Nhập danh sách</a>
-                </div>
             </div>
         </div>
     </div>
@@ -75,7 +67,7 @@ $statCards = [
             <div class="col-12 col-xl-3 text-xl-end">
                 <label class="form-label fw-semibold mb-2 d-block">Thao tác</label>
                 <div class="d-flex flex-wrap gap-2 justify-content-xl-end">
-                    <a href="#" class="btn btn-primary rounded-pill px-4">+ Thêm nhân viên</a>
+                    <a href="?url=staff/create" class="btn btn-primary rounded-pill px-4">+ Thêm nhân viên</a>
                     <a href="#" class="btn btn-outline-secondary rounded-pill px-4">Xuất Excel</a>
                 </div>
             </div>
@@ -98,59 +90,49 @@ $statCards = [
                 <tr>
                     <th style="width: 100px;">Mã NV</th>
                     <th style="width: 200px;">Họ và tên</th>
-                    <th style="width: 150px;">Email</th>
-                    <th style="width: 120px;">Điện thoại</th>
-                    <th style="width: 110px;">Chức vụ</th>
-                    <th style="width: 130px;">Phòng ban</th>
-                    <th style="width: 100px;">Trạng thái</th>
+                    <th style="width: 150px;">Ngày sinh</th>
+                    <th style="width: 120px;">Giới tính</th>
+                    <th style="width: 110px;">SDT</th>
+                    <th style="width: 130px;">Địa chỉ</th>
+                    <th style="width: 100px;">Chức vụ</th>
                     <th style="width: 150px;">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($staff)): ?>
-                    <?php foreach ($staff as $employee): ?>
-                        <?php
-                        $statusRaw = trim((string) ($employee->trang_thai ?? 'Hoạt động'));
-                        $statusClass = 'text-bg-success';
-                        if (stripos($statusRaw, 'nghỉ') !== false || stripos($statusRaw, 'phép') !== false) {
-                            $statusClass = 'text-bg-warning';
-                        } elseif (stripos($statusRaw, 'ngưng') !== false || stripos($statusRaw, 'thôi') !== false) {
-                            $statusClass = 'text-bg-danger';
-                        }
-                        ?>
+                <?php if (!empty($staffs)): ?>
+                    <?php foreach ($staffs as $staff): ?>
                         <tr>
                             <td class="fw-semibold text-primary">
-                                <?= htmlspecialchars($employee->ma_nv ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($staff['MaNV'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td class="fw-semibold">
-                                <?= htmlspecialchars($employee->ten_nv ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($staff['HoTen'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td class="text-muted">
-                                <?= htmlspecialchars($employee->email ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($staff['NgaySinh'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td>
-                                <?= htmlspecialchars($employee->dien_thoai ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <?= htmlspecialchars($staff['GioiTinh'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td>
-                                <span class="badge rounded-pill badge-info px-3 py-2">
-                                    <?= htmlspecialchars($employee->chuc_vu ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                <span class="badge badge-info px-3 py-2" style="color: black">
+                                    <?= htmlspecialchars($staff['SDT'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
                             <td>
                                 <small class="text-muted">
-                                    <?= htmlspecialchars($employee->phong_ban ?? '-', ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars($staff['DiaChi'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                                 </small>
                             </td>
                             <td>
-                                <span class="badge rounded-pill <?= $statusClass ?> px-3 py-2">
-                                    <?= htmlspecialchars($statusRaw, ENT_QUOTES, 'UTF-8') ?>
-                                </span>
+                                <?= htmlspecialchars($staff['ChucVu'] ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="#" class="btn btn-outline-primary">Xem</a>
-                                    <a href="#" class="btn btn-outline-secondary">Sửa</a>
-                                    <a href="#" class="btn btn-outline-danger">Xóa</a>
+                                    <a href="?url=staff/edit&id=<?= htmlspecialchars($staff['MaNV'], ENT_QUOTES, 'UTF-8') ?>"
+                                        class="btn btn-outline-secondary">Sửa</a>
+                                    <a href="?url=staff/delete&id=<?= htmlspecialchars($staff['MaNV'], ENT_QUOTES, 'UTF-8') ?>"
+                                        class="btn btn-outline-danger">Xóa</a>
                                 </div>
                             </td>
                         </tr>
@@ -159,7 +141,8 @@ $statCards = [
                     <tr>
                         <td colspan="8" class="text-center py-5">
                             <div class="text-muted mb-2">Chưa có nhân viên nào.</div>
-                            <a href="#" class="btn btn-primary rounded-pill px-4">+ Thêm nhân viên đầu tiên</a>
+                            <a href="?url=staff/create" class="btn btn-primary rounded-pill px-4">+ Thêm nhân viên đầu
+                                tiên</a>
                         </td>
                     </tr>
                 <?php endif; ?>
