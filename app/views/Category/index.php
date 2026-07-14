@@ -83,7 +83,7 @@ $activeSetKey = 'the-loai';
         <span class="badge library-chip rounded-pill px-3 py-2">4 nhóm dữ liệu</span>
     </div>
 
-    <div class="tab-content">
+    <div class="tab-content text-center">
         <?php foreach ($categorySets as $key => $set): ?>
             <div class="tab-pane fade <?= $key === $activeSetKey ? 'show active' : '' ?>" id="pane-<?= $key ?>" role="tabpanel"
                 aria-labelledby="tab-<?= $key ?>" tabindex="0">
@@ -94,7 +94,7 @@ $activeSetKey = 'the-loai';
                                 <th style="width: 120px;">Mã</th>
                                 <th>Tên <?= htmlspecialchars(mb_strtolower($set['title']), ENT_QUOTES, 'UTF-8') ?></th>
                                 <th>Mô tả</th>
-                                <th style="width: 150px;">Thao tác</th>
+                                <th style="width: 120px;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>

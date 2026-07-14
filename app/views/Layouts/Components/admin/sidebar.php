@@ -17,6 +17,8 @@ $currentLabelMap = [
     'categories' => 'Quản lý danh mục',
     'user' => 'Quản lý độc giả',
     'users' => 'Quản lý độc giả',
+    'staff' => 'Quản lý nhân viên',
+    'account' => 'Quản lý tài khoản',
     'borrow' => 'Phiếu mượn trả',
     'report' => 'Báo cáo',
     'setting' => 'Cài đặt hệ thống',
@@ -48,6 +50,12 @@ $currentLabel = $currentLabelMap[$currentRoute] ?? 'Tổng quan';
         <a href="?url=user"
             class="list-group-item list-group-item-action rounded-3<?= $isActive(['user', 'users']) ?>">Quản lý độc
             giả</a>
+        <a href="?url=account"
+            class="list-group-item list-group-item-action rounded-3<?= $isActive(['account']) ?>">Quản lý tài
+            khoản</a>
+        <a href="?url=staff" class="list-group-item list-group-item-action rounded-3<?= $isActive(['staff']) ?>">Quản lý
+            nhân
+            viên</a>
         <a href="?url=borrow" class="list-group-item list-group-item-action rounded-3<?= $isActive(['borrow']) ?>">Phiếu
             mượn trả</a>
         <a href="?url=report" class="list-group-item list-group-item-action rounded-3<?= $isActive(['report']) ?>">Báo

@@ -40,7 +40,8 @@ $statCards = [
                         <span class="badge rounded-pill text-bg-light text-primary">Thống kê</span>
                     </div>
                     <div class="small text-light opacity-75 mb-1">
-                        <?= htmlspecialchars($card['label'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <?= htmlspecialchars($card['label'], ENT_QUOTES, 'UTF-8') ?>
+                    </div>
                     <div class="display-6 fw-semibold mb-0"><?= (int) $card['value'] ?></div>
                 </div>
             </div>
@@ -93,17 +94,17 @@ $statCards = [
     <div class="table-responsive">
         <table class="table align-middle mb-0">
             <thead class="table-light">
-                <tr>
+                <tr class="text-center">
                     <th style="width: 110px;">Mã độc giả</th>
-                    <th>Họ và tên</th>
-                    <th style="width: 160px;">Email</th>
+                    <th style="width: 200px;">Họ và tên</th>
+                    <th style=" width: 160px;">Email</th>
                     <th style="width: 120px;">Điện thoại</th>
                     <th style="width: 100px;">Đang mượn</th>
                     <th style="width: 120px;">Trạng thái</th>
-                    <th class="text-end" style="width: 150px;">Thao tác</th>
+                    <th style="width: 150px;">Thao tác</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
                 <?php if (!empty($readers)): ?>
                     <?php foreach ($readers as $reader): ?>
                         <?php
@@ -130,7 +131,7 @@ $statCards = [
                             <td>
                                 <?= htmlspecialchars($reader->dien_thoai ?? '-', ENT_QUOTES, 'UTF-8') ?>
                             </td>
-                            <td class="text-center">
+                            <td>
                                 <span class="badge rounded-pill library-chip px-3 py-2">
                                     <?= (int) ($reader->so_luong_dang_muon ?? 0) ?>
                                 </span>
@@ -140,7 +141,7 @@ $statCards = [
                                     <?= htmlspecialchars($statusRaw, ENT_QUOTES, 'UTF-8') ?>
                                 </span>
                             </td>
-                            <td class="text-end">
+                            <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="#" class="btn btn-outline-primary">Xem</a>
                                     <a href="#" class="btn btn-outline-secondary">Sửa</a>

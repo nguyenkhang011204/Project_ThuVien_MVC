@@ -141,19 +141,19 @@ if ($countBooks === 0) {
         <span class="badge library-chip rounded-pill px-3 py-2"><?= $countBooks ?> bản ghi</span>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive text-center">
         <table class="table align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 120px;">ISBN</th>
+                    <th style="width: 120px;">Mã sách</th>
                     <th>Tên sách</th>
                     <th>Tác giả</th>
-                    <th class="text-center" style="width: 90px;">SL</th>
+                    <th style="width: 90px;">SL</th>
                     <th style="width: 150px;">Trạng thái</th>
-                    <th class="text-end" style="width: 180px;">Thao tác</th>
+                    <th style="width: 180px;">Thao tác</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
                 <?php if (!empty($books)): ?>
                     <?php foreach ($books as $book): ?>
                         <?php
@@ -189,7 +189,7 @@ if ($countBooks === 0) {
                             <td>
                                 <span class="badge rounded-pill <?= $statusClass ?> px-3 py-2"><?= $statusLabel ?></span>
                             </td>
-                            <td class="text-end">
+                            <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group" aria-label="Book actions">
                                     <a href="#" class="btn btn-outline-primary">Sửa</a>
                                     <a href="#" class="btn btn-outline-secondary">Xem</a>
