@@ -27,7 +27,8 @@ $bookAuthors = $bookAuthors ?? [];
 
 <div class="card library-card">
     <div class="card-body p-4 p-lg-5">
-        <form method="POST" action="?url=book/update" class="needs-validation">
+        <form method="POST" action="?url=book/update/<?= htmlspecialchars($book["MaSach"], ENT_QUOTES, 'UTF-8') ?>"
+            class="needs-validation">
             <input type="hidden" name="MaSach" value="<?= htmlspecialchars($book["MaSach"], ENT_QUOTES, 'UTF-8') ?>">
 
             <div class="row mb-4">

@@ -62,10 +62,13 @@ class CategoryModel extends Model
     // Lấy số lượng thể loại
     public function getCategoryCount()
     {
-        $sql = "SELECT COUNT(*) as total FROM theloai";
-        $result = $this->db->query($sql);
+        $sql = "SELECT COUNT(*) AS total FROM theloai";
+
+        $this->db->query($sql);
+
         $result = $this->db->fetch();
-        return $result->total ?? 0;
+
+        return $result['total'] ?? 0;
     }
 
     // Lấy số sách theo thể loại
@@ -76,6 +79,16 @@ class CategoryModel extends Model
         $this->db->bind(':categoryId', $categoryId);
         $result = $this->db->fetch();
         return $result->total ?? 0;
+    }
+
+    public function hasBooks($id)
+    {
+        $this->db->query("SELECT COUNT(*) AS total FROM sach WHERE MaTL = :id");
+        $this->db->bind(':id', $id);
+
+        $result = $this->db->fetch();
+
+        return $result['total'] > 0;
     }
 }
 ?>
