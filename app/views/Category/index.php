@@ -1,6 +1,4 @@
 <?php
-
-
 $activeSetKey = 'the-loai';
 ?>
 
@@ -92,8 +90,8 @@ $activeSetKey = 'the-loai';
                         <thead class="table-light">
                             <tr>
                                 <th style="width: 120px;">Mã</th>
-                                <th>Tên <?= htmlspecialchars(mb_strtolower($set['title']), ENT_QUOTES, 'UTF-8') ?></th>
-                                <th>Mô tả</th>
+                                <th style="width: 200px;">Tên <?= htmlspecialchars(mb_strtolower($set['title']), ENT_QUOTES, 'UTF-8') ?></th>
+                                <th style="width: 300px;">Mô tả</th>
                                 <th style="width: 120px;">Thao tác</th>
                             </tr>
                         </thead>
@@ -114,7 +112,7 @@ $activeSetKey = 'the-loai';
                                             <?= htmlspecialchars($record['description'], ENT_QUOTES, 'UTF-8') ?>
                                         </td>
                                         <td>
-                                            <div class="d-flex gap-2">
+                                            <div class="d-flex gap-2 text-center justify-content-center">
                                                 <a href="#" class="btn btn-outline-primary btn-sm">✏️</a>
                                                 <a href="#" class="btn btn-outline-danger btn-sm">🗑️</a>
                                             </div>
