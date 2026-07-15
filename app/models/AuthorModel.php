@@ -1,94 +1,105 @@
 <?php
 class AuthorModel extends Model
 {
-    // Lấy tất cả tác giả
-    public function getAllAuthors()
+    // Đăng nhập: kiểm tra tài khoản
+    public function login($tenDangNhap, $matKhau)
     {
-        $sql = "SELECT * FROM tacgia ORDER BY TenTacGia ASC";
+        $sql = "SELECT * FROM nguoidung WHERE TenDangNhap = :tenDangNhap AND TrangThai = 1";
         $this->db->query($sql);
-        return $this->db->fetchAll();
+        $this->db->bind(':tenDangNhap', $tenDangNhap);
+        $user = $this->db->fetch();
+
+        if (!$user) {
+            return false;
+        }
+
+        // Mật khẩu trong DB hiện đang lưu dạng plain-text ('123456'...)
+        // Nếu sau này bạn hash mật khẩu, thay dòng dưới bằng password_verify()
+        if ($user['MatKhau'] !== $matKhau) {
+            return false;
+        }
+
+        return $user;
     }
 
-    // Lấy tác giả theo ID
-    public function getAuthorById($authorId)
+    // Kiểm tra tên đăng nhập đã tồn tại chưa
+    public function usernameExists($tenDangNhap)
     {
-        $sql = "SELECT * FROM tacgia WHERE MaTG = :authorId";
+        $sql = "SELECT COUNT(*) as total FROM nguoidung WHERE TenDangNhap = :tenDangNhap";
         $this->db->query($sql);
-        $this->db->bind(':authorId', $authorId);
-        return $this->db->fetch();
-    }
-
-    // Tìm kiếm tác giả
-    public function searchAuthors($keyword)
-    {
-        $keyword = "%$keyword%";
-        $sql = "SELECT * FROM tacgia WHERE TenTacGia LIKE :keyword OR QuocTich LIKE :keyword ORDER BY TenTacGia ASC";
-        $this->db->query($sql);
-        $this->db->bind(':keyword', $keyword);
-        return $this->db->fetchAll();
-    }
-
-    // Tạo tác giả mới
-    public function createAuthor($data)
-    {
-        $sql = "INSERT INTO tacgia (MaTG, TenTacGia, QuocTich, NamSinh, GhiChu) 
-                VALUES (:maTG, :tenTacGia, :quocTich, :namSinh, :ghiChu)";
-        $this->db->query($sql);
-        $this->db->bind(':maTG', $data['MaTG']);
-        $this->db->bind(':tenTacGia', $data['TenTacGia']);
-        $this->db->bind(':quocTich', $data['QuocTich']);
-        $this->db->bind(':namSinh', $data['NamSinh']);
-        $this->db->bind(':ghiChu', $data['GhiChu']);
-        return $this->db->execute();
-    }
-
-    // Cập nhật tác giả
-    public function updateAuthor($authorId, $data)
-    {
-        $sql = "UPDATE tacgia SET TenTacGia = :tenTacGia, QuocTich = :quocTich, NamSinh = :namSinh, GhiChu = :ghiChu 
-                WHERE MaTG = :maTG";
-        $this->db->query($sql);
-        $this->db->bind(':tenTacGia', $data['TenTacGia']);
-        $this->db->bind(':quocTich', $data['QuocTich']);
-        $this->db->bind(':namSinh', $data['NamSinh']);
-        $this->db->bind(':ghiChu', $data['GhiChu']);
-        $this->db->bind(':maTG', $authorId);
-        return $this->db->execute();
-    }
-
-    // Xóa tác giả
-    public function deleteAuthor($authorId)
-    {
-        // Xóa liên kết sách-tác giả trước
-        $sqlDelete1 = "DELETE FROM sach_tacgia WHERE MaTG = :authorId";
-        $this->db->query($sqlDelete1);
-        $this->db->bind(':authorId', $authorId);
-        $this->db->execute();
-
-        // Xóa tác giả
-        $sqlDelete2 = "DELETE FROM tacgia WHERE MaTG = :authorId";
-        $this->db->query($sqlDelete2);
-        $this->db->bind(':authorId', $authorId);
-        return $this->db->execute();
-    }
-
-    // Lấy số lượng tác giả
-    public function getAuthorCount()
-    {
-        $sql = "SELECT COUNT(*) as total FROM tacgia";
-        $result = $this->db->query($sql);
+        $this->db->bind(':tenDangNhap', $tenDangNhap);
         $result = $this->db->fetch();
-        return $result->total ?? 0;
+        return ($result['total'] ?? 0) > 0;
     }
 
-    // Lấy số sách của tác giả
-    public function getBooksCountByAuthor($authorId)
+    // Kiểm tra email đã tồn tại chưa (bảng docgia)
+    public function emailExists($email)
     {
-        $sql = "SELECT COUNT(DISTINCT MaSach) as total FROM sach_tacgia WHERE MaTG = :authorId";
+        $sql = "SELECT COUNT(*) as total FROM docgia WHERE Email = :email";
         $this->db->query($sql);
-        $this->db->bind(':authorId', $authorId);
+        $this->db->bind(':email', $email);
         $result = $this->db->fetch();
-        return $result->total ?? 0;
+        return ($result['total'] ?? 0) > 0;
+    }
+
+    // Sinh mã người dùng mới (ND012, ND013...)
+    public function generateNextMaND()
+    {
+        $sql = "SELECT MaND FROM nguoidung ORDER BY MaND DESC LIMIT 1";
+        $this->db->query($sql);
+        $last = $this->db->fetch();
+
+        $number = $last ? ((int) substr($last['MaND'], 2)) + 1 : 1;
+        return 'ND' . str_pad($number, 3, '0', STR_PAD_LEFT);
+    }
+
+    // Sinh mã độc giả mới (DG009, DG010...)
+    public function generateNextMaDG()
+    {
+        $sql = "SELECT MaDG FROM docgia ORDER BY MaDG DESC LIMIT 1";
+        $this->db->query($sql);
+        $last = $this->db->fetch();
+
+        $number = $last ? ((int) substr($last['MaDG'], 2)) + 1 : 1;
+        return 'DG' . str_pad($number, 3, '0', STR_PAD_LEFT);
+    }
+
+    // Đăng ký độc giả mới — tạo cả nguoidung + docgia
+    public function register($data)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            $maND = $this->generateNextMaND();
+            $maDG = $this->generateNextMaDG();
+
+            // 1. Tạo tài khoản đăng nhập
+            $sql1 = "INSERT INTO nguoidung (MaND, TenDangNhap, MatKhau, VaiTro, TrangThai)
+                     VALUES (:maND, :tenDangNhap, :matKhau, 'DOCGIA', 1)";
+            $this->db->query($sql1);
+            $this->db->bind(':maND', $maND);
+            $this->db->bind(':tenDangNhap', $data['TenDangNhap']);
+            $this->db->bind(':matKhau', $data['MatKhau']);
+            $this->db->execute();
+
+            // 2. Tạo hồ sơ độc giả
+            $sql2 = "INSERT INTO docgia (MaDG, MaND, HoTen, SDT, Email, NgayDangKy)
+                     VALUES (:maDG, :maND, :hoTen, :sdt, :email, :ngayDangKy)";
+            $this->db->query($sql2);
+            $this->db->bind(':maDG', $maDG);
+            $this->db->bind(':maND', $maND);
+            $this->db->bind(':hoTen', $data['HoTen']);
+            $this->db->bind(':sdt', $data['SDT']);
+            $this->db->bind(':email', $data['Email']);
+            $this->db->bind(':ngayDangKy', date('Y-m-d'));
+            $this->db->execute();
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollback();
+            return false;
+        }
     }
 }
 ?>
